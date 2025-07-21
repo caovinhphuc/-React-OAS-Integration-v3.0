@@ -1,0 +1,34 @@
+# FastAPI ML Service Dependencies
+fastapi>=0.100.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
+
+# Machine Learning & Data Science
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+torch>=2.0.0
+scipy>=1.11.0
+
+# Data Processing & Analysis
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.15.0
+
+# Time Series & Forecasting
+statsmodels>=0.14.0
+
+# API & Database
+httpx>=0.25.0
+redis>=4.6.0
+python-multipart>=0.0.6
+
+# Utilities
+python-dotenv>=1.0.0
+loguru>=0.7.0
+schedule>=1.2.0
+
+# Optional ML packages (comment out to reduce build time)
+# prophet>=1.1.0
+# pmdarima>=2.0.0
+# tensorflow>=2.13.0
