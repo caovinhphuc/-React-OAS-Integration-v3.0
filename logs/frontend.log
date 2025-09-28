@@ -55,3 +55,21 @@
  HTTP  9/28/2025 2:39:37 PM ::1 Returned 304 in 0 ms
  HTTP  9/28/2025 2:39:37 PM ::1 Returned 200 in 2 ms
  HTTP  9/28/2025 2:39:37 PM ::1 Returned 200 in 2 ms
+ HTTP  9/28/2025 2:41:16 PM ::1 GET /dashboard
+ HTTP  9/28/2025 2:41:16 PM ::1 Returned 404 in 4 ms
+ HTTP  9/28/2025 2:41:16 PM ::1 GET /favicon.ico
+ HTTP  9/28/2025 2:41:16 PM ::1 Returned 200 in 5 ms
+ HTTP  9/28/2025 2:45:18 PM ::1 GET /
+ HTTP  9/28/2025 2:45:18 PM ::1 Returned 304 in 31 ms
+ HTTP  9/28/2025 2:45:18 PM ::1 GET /static/js/main.4e874a0b.js
+ HTTP  9/28/2025 2:45:18 PM ::1 GET /static/css/main.f4afd472.css
+ HTTP  9/28/2025 2:45:18 PM ::1 Returned 304 in 8 ms
+ HTTP  9/28/2025 2:45:18 PM ::1 Returned 304 in 10 ms
+ HTTP  9/28/2025 2:45:18 PM ::1 GET /favicon.ico
+ HTTP  9/28/2025 2:45:18 PM ::1 Returned 304 in 1 ms
+ HTTP  9/28/2025 2:45:18 PM ::1 GET /manifest.json
+ HTTP  9/28/2025 2:45:18 PM ::1 Returned 304 in 1 ms
+ HTTP  9/28/2025 2:52:02 PM ::1 GET /dashboard
+ HTTP  9/28/2025 2:52:02 PM ::1 Returned 404 in 26 ms
+ HTTP  9/28/2025 2:52:02 PM ::1 GET /favicon.ico
+ HTTP  9/28/2025 2:52:02 PM ::1 Returned 304 in 3 ms
