@@ -1,15 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit'
-import authSlice from './slices/authSlice'
-import apiSlice from './slices/apiSlice'
-import uiSlice from './slices/uiSlice'
-import schemaSlice from './slices/schemaSlice'
+import { configureStore } from '@reduxjs/toolkit';
+import dashboardReducer from './slices/dashboardSlice';
+import aiReducer from './slices/aiSlice';
 
 export const store = configureStore({
   reducer: {
-    auth: authSlice,
-    api: apiSlice,
-    ui: uiSlice,
-    schema: schemaSlice,
+    dashboard: dashboardReducer,
+    ai: aiReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -17,8 +13,7 @@ export const store = configureStore({
         ignoredActions: ['persist/PERSIST'],
       },
     }),
-  devTools: process.env.NODE_ENV !== 'production',
-})
+});
 
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

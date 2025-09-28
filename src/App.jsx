@@ -1,5 +1,5 @@
-import React, { Suspense, lazy } from 'react';
-import { Provider } from 'react-redux';
+import React, { Suspense, lazy } from "react";
+import { Provider } from "react-redux";
 import {
   Link,
   Navigate,
@@ -7,16 +7,19 @@ import {
   BrowserRouter as Router,
   Routes,
   useLocation,
-} from 'react-router-dom';
-import './App.css';
-import Loading from './components/common/Loading';
-import { store } from './store/store';
+} from "react-router-dom";
+import "./App.css";
+import Loading from "./components/common/Loading";
+import { store } from "./store/store";
 
 // Lazy load components
 const LiveDashboard = lazy(
-  () => import('./components/dashboard/LiveDashboard')
+  () => import("./components/dashboard/LiveDashboard")
 );
-const AIDashboard = lazy(() => import('./components/ai/AIDashboard'));
+const AIDashboard = lazy(() => import("./components/ai/AIDashboard"));
+const GoogleSheetsIntegration = lazy(
+  () => import("./components/google/GoogleSheetsIntegration")
+);
 
 // Home component
 const Home = () => (
@@ -48,6 +51,17 @@ const Home = () => (
           Open AI Analytics
         </Link>
       </div>
+
+      <div className="feature-card tertiary">
+        <h3>📊 Google Sheets</h3>
+        <p>
+          Tích hợp Google Sheets để quản lý dữ liệu, báo cáo và tự động hóa quy
+          trình làm việc.
+        </p>
+        <Link to="/google-sheets" className="btn-primary">
+          Mở Google Sheets
+        </Link>
+      </div>
     </div>
 
     <div className="features-grid">
@@ -67,12 +81,12 @@ const Home = () => (
         <h3>🎯 What's New in v3.0</h3>
         <div className="feature-tags">
           {[
-            '📡 Real-time WebSocket Integration',
-            '📊 Live Performance Dashboard',
-            '⚡ 50% Performance Improvement',
-            '🎨 Modern UI/UX Design',
-            '📱 Responsive Mobile Support',
-            '🔒 Enhanced Security Features',
+            "📡 Real-time WebSocket Integration",
+            "📊 Live Performance Dashboard",
+            "⚡ 50% Performance Improvement",
+            "🎨 Modern UI/UX Design",
+            "📱 Responsive Mobile Support",
+            "🔒 Enhanced Security Features",
           ].map((feature, index) => (
             <span key={index} className="feature-tag">
               {feature}
@@ -97,21 +111,27 @@ const Navigation = () => {
       <div className="nav-links">
         <Link
           to="/"
-          className={`nav-link ${currentPath === '/' ? 'active' : ''}`}
+          className={`nav-link ${currentPath === "/" ? "active" : ""}`}
         >
           Home
         </Link>
         <Link
           to="/dashboard"
-          className={`nav-link dashboard-link ${currentPath === '/dashboard' ? 'active' : ''}`}
+          className={`nav-link dashboard-link ${currentPath === "/dashboard" ? "active" : ""}`}
         >
           📊 Live Dashboard
         </Link>
         <Link
           to="/ai-analytics"
-          className={`nav-link ai-link ${currentPath === '/ai-analytics' ? 'active' : ''}`}
+          className={`nav-link ai-link ${currentPath === "/ai-analytics" ? "active" : ""}`}
         >
           🧠 AI Analytics
+        </Link>
+        <Link
+          to="/google-sheets"
+          className={`nav-link sheets-link ${currentPath === "/google-sheets" ? "active" : ""}`}
+        >
+          📊 Google Sheets
         </Link>
       </div>
     </nav>
@@ -131,6 +151,10 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/dashboard" element={<LiveDashboard />} />
                 <Route path="/ai-analytics" element={<AIDashboard />} />
+                <Route
+                  path="/google-sheets"
+                  element={<GoogleSheetsIntegration />}
+                />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </Suspense>

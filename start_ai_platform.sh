@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# 🧠 React OAS Integration v4.0 - AI-Powered Platform Deployment Script
+# 🧠 React OAS Integration v3.0 - AI-Powered Platform Deployment Script
 # This script starts all services for the complete AI integration
 
-echo "🚀 Starting React OAS Integration v4.0 - AI-Powered Platform..."
+echo "🚀 Starting React OAS Integration v3.0 - AI-Powered Platform..."
 echo ""
 
 # Colors for output
@@ -91,20 +91,10 @@ cd ..
 echo -e "${BLUE}🧠 Starting AI/ML Service...${NC}"
 cd ai-service
 
-if [ ! -d "venv" ]; then
-    echo "🐍 Creating Python virtual environment..."
-    python3 -m venv venv
-fi
+# Use existing virtual environment
+source ../ai-venv/bin/activate
 
-source venv/bin/activate
-
-# Check if FastAPI is installed
-if ! pip show fastapi > /dev/null 2>&1; then
-    echo "📦 Installing AI service dependencies..."
-    pip install fastapi uvicorn pydantic
-fi
-
-nohup uvicorn main_simple:app --host 0.0.0.0 --port 8000 > ../logs/ai-service.log 2>&1 &
+nohup python3 -m uvicorn main_simple:app --host 0.0.0.0 --port 8000 > ../logs/ai-service.log 2>&1 &
 AI_PID=$!
 echo "AI Service PID: $AI_PID"
 cd ..
@@ -135,7 +125,7 @@ echo "🎉 All services are now running!"
 echo ""
 echo -e "${GREEN}📊 System Status:${NC}"
 echo "┌─────────────────────────────────────────────────────────────┐"
-echo "│                   🚀 REACT OAS INTEGRATION v4.0            │"
+echo "│                   🚀 REACT OAS INTEGRATION v3.0            │"
 echo "│                     AI-POWERED PLATFORM                    │"
 echo "├─────────────────────────────────────────────────────────────┤"
 echo "│ 🌐 Frontend:     http://localhost:8080                     │"
@@ -167,5 +157,5 @@ echo ""
 echo -e "${BLUE}🛑 To stop all services:${NC}"
 echo "   kill $FRONTEND_PID $BACKEND_PID $AI_PID"
 echo ""
-echo -e "${GREEN}✅ React OAS Integration v4.0 is now fully operational!${NC}"
+echo -e "${GREEN}✅ React OAS Integration v3.0 is now fully operational!${NC}"
 echo "🎊 Enjoy your AI-powered analytics platform!"

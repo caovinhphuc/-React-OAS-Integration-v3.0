@@ -1,311 +1,165 @@
-import {
-  ArcElement,
-  BarElement,
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-} from 'chart.js';
-import React, { useEffect, useRef, useState } from 'react';
-import { Doughnut, Line } from 'react-chartjs-2';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { connectWebSocket, updateMetrics } from '../../store/slices/dashboardSlice';
 import './LiveDashboard.css';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  BarElement,
-);
-
 const LiveDashboard = () => {
-  const [metrics, setMetrics] = useState({
-    activeUsers: 0,
-    totalRequests: 0,
-    responseTime: 0,
-    errorRate: 0,
-    systemLoad: 0,
-    memoryUsage: 0,
-    diskUsage: 0,
-    networkIO: 0,
-  });
+  const dispatch = useDispatch();
+  const { connectionStatus, realTimeData, metrics, isLoading, error } = useSelector(state => state.dashboard);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
-  const [chartData, setChartData] = useState({
-    labels: [],
-    datasets: [],
-  });
-
-  const [connectionStatus, setConnectionStatus] = useState('connecting');
-  const socketRef = useRef(null);
-  const metricsHistory = useRef([]);
-
-  // Simulate WebSocket connection
   useEffect(() => {
-    const connectWebSocket = () => {
-      setConnectionStatus('connected');
+    // Kết nối WebSocket
+    dispatch(connectWebSocket());
 
-      // Simulate real-time data updates
-      const interval = setInterval(() => {
-        const newMetrics = {
-          activeUsers: Math.floor(Math.random() * 1000) + 100,
-          totalRequests: Math.floor(Math.random() * 10000) + 5000,
-          responseTime: Math.floor(Math.random() * 200) + 50,
-          errorRate: Math.random() * 5,
-          systemLoad: Math.random() * 100,
-          memoryUsage: Math.random() * 80 + 20,
-          diskUsage: Math.random() * 60 + 30,
-          networkIO: Math.random() * 1000 + 200,
-        };
+    // Cập nhật thời gian mỗi giây
+    const timeInterval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
 
-        setMetrics(newMetrics);
+    // Simulate metrics updates
+    const metricsInterval = setInterval(() => {
+      dispatch(updateMetrics({
+        activeConnections: Math.floor(Math.random() * 100) + 10,
+        averageResponseTime: Math.floor(Math.random() * 500) + 100,
+        uptime: Date.now() - (Date.now() - 3600000) // 1 hour uptime
+      }));
+    }, 5000);
 
-        // Update chart data
-        const now = new Date();
-        const timeLabel = now.toLocaleTimeString();
-
-        metricsHistory.current.push({
-          time: timeLabel,
-          ...newMetrics,
-        });
-
-        // Keep only last 20 data points
-        if (metricsHistory.current.length > 20) {
-          metricsHistory.current.shift();
-        }
-
-        setChartData({
-          labels: metricsHistory.current.map((item) => item.time),
-          datasets: [
-            {
-              label: 'Response Time (ms)',
-              data: metricsHistory.current.map((item) => item.responseTime),
-              borderColor: 'rgb(75, 192, 192)',
-              backgroundColor: 'rgba(75, 192, 192, 0.2)',
-              tension: 0.4,
-            },
-            {
-              label: 'Active Users',
-              data: metricsHistory.current.map((item) => item.activeUsers / 10),
-              borderColor: 'rgb(255, 99, 132)',
-              backgroundColor: 'rgba(255, 99, 132, 0.2)',
-              tension: 0.4,
-            },
-          ],
-        });
-      }, 2000);
-
-      return () => clearInterval(interval);
+    return () => {
+      clearInterval(timeInterval);
+      clearInterval(metricsInterval);
     };
+  }, [dispatch]);
 
-    const cleanup = connectWebSocket();
-    return cleanup;
-  }, []);
-
-  const statusIndicator = (status) => {
-    const colors = {
-      connecting: '#fbbf24',
-      connected: '#10b981',
-      disconnected: '#ef4444',
-    };
-
-    return (
-      <div className="status-indicator">
-        <div className="status-dot" style={{ backgroundColor: colors[status] }} />
-        <span className="status-text">{status === 'connected' ? 'Live' : status}</span>
-      </div>
-    );
+  const formatTime = (date) => {
+    return date.toLocaleString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
   };
 
-  const MetricCard = ({ title, value, unit, trend, icon, color }) => (
-    <div className="metric-card" style={{ borderColor: color }}>
-      <div className="metric-header">
-        <div className="metric-icon" style={{ color }}>
-          {icon}
-        </div>
-        <h3 className="metric-title">{title}</h3>
-      </div>
-      <div className="metric-content">
-        <div className="metric-value">
-          {typeof value === 'number' ? value.toLocaleString() : value}
-          <span className="metric-unit">{unit}</span>
-        </div>
-        {trend && (
-          <div className={`metric-trend ${trend > 0 ? 'positive' : 'negative'}`}>
-            {trend > 0 ? '↗' : '↘'} {Math.abs(trend).toFixed(1)}%
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  const systemMetrics = [
-    {
-      title: 'Active Users',
-      value: metrics.activeUsers,
-      unit: '',
-      icon: '👥',
-      color: '#3b82f6',
-      trend: Math.random() * 10 - 5,
-    },
-    {
-      title: 'Total Requests',
-      value: metrics.totalRequests,
-      unit: '',
-      icon: '📊',
-      color: '#10b981',
-      trend: Math.random() * 15,
-    },
-    {
-      title: 'Response Time',
-      value: Math.round(metrics.responseTime),
-      unit: 'ms',
-      icon: '⚡',
-      color: '#f59e0b',
-      trend: Math.random() * 8 - 4,
-    },
-    {
-      title: 'Error Rate',
-      value: metrics.errorRate.toFixed(2),
-      unit: '%',
-      icon: '🚨',
-      color: '#ef4444',
-      trend: Math.random() * -5,
-    },
-  ];
-
-  const performanceData = {
-    labels: ['CPU', 'Memory', 'Disk', 'Network'],
-    datasets: [
-      {
-        data: [metrics.systemLoad, metrics.memoryUsage, metrics.diskUsage, metrics.networkIO / 10],
-        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'],
-        borderWidth: 0,
-      },
-    ],
+  const formatUptime = (ms) => {
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
   };
+
+  // Chuẩn bị dữ liệu cho biểu đồ
+  const chartData = realTimeData.slice(0, 20).reverse().map((item, index) => ({
+    time: index,
+    value: item.value,
+    timestamp: new Date(item.timestamp).toLocaleTimeString('vi-VN')
+  }));
 
   return (
     <div className="live-dashboard">
       <div className="dashboard-header">
-        <h1>🚀 Live Dashboard v3.0</h1>
-        <div className="dashboard-controls">
-          {statusIndicator(connectionStatus)}
-          <div className="last-update">Last update: {new Date().toLocaleTimeString()}</div>
+        <h1>📊 Live Dashboard</h1>
+        <div className="header-info">
+          <span className="current-time">{formatTime(currentTime)}</span>
+          <div className={`connection-status ${connectionStatus}`}>
+            {connectionStatus === 'connected' ? '🟢 Đã kết nối' : '🔴 Mất kết nối'}
+          </div>
         </div>
       </div>
+
+      {error && (
+        <div className="error-banner">
+          <span>⚠️ Lỗi: {error}</span>
+        </div>
+      )}
 
       <div className="metrics-grid">
-        {systemMetrics.map((metric, index) => (
-          <MetricCard key={index} {...metric} />
-        ))}
+        <div className="metric-card">
+          <div className="metric-icon">📈</div>
+          <div className="metric-content">
+            <h3>Tổng Request</h3>
+            <p className="metric-value">{metrics.totalRequests}</p>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="metric-icon">🔗</div>
+          <div className="metric-content">
+            <h3>Kết nối đang hoạt động</h3>
+            <p className="metric-value">{metrics.activeConnections}</p>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="metric-icon">⚡</div>
+          <div className="metric-content">
+            <h3>Thời gian phản hồi TB</h3>
+            <p className="metric-value">{metrics.averageResponseTime}ms</p>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="metric-icon">⏱️</div>
+          <div className="metric-content">
+            <h3>Thời gian hoạt động</h3>
+            <p className="metric-value">{formatUptime(metrics.uptime)}</p>
+          </div>
+        </div>
       </div>
 
-      <div className="charts-section">
+      <div className="charts-grid">
         <div className="chart-container">
-          <h3>📈 Real-time Performance</h3>
-          <div className="chart-wrapper">
-            <Line
-              data={chartData}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                animation: {
-                  duration: 750,
-                  easing: 'easeInOutQuart',
-                },
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                    grid: {
-                      color: 'rgba(255, 255, 255, 0.1)',
-                    },
-                  },
-                  x: {
-                    grid: {
-                      color: 'rgba(255, 255, 255, 0.1)',
-                    },
-                  },
-                },
-                plugins: {
-                  legend: {
-                    labels: {
-                      color: 'white',
-                    },
-                  },
-                },
-              }}
-            />
-          </div>
+          <h3>📊 Dữ liệu thời gian thực</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="timestamp" />
+              <YAxis />
+              <Tooltip
+                labelFormatter={(value, payload) => `Thời gian: ${payload[0]?.payload?.timestamp}`}
+                formatter={(value) => [`${value}`, 'Giá trị']}
+              />
+              <Line type="monotone" dataKey="value" stroke="#3498db" strokeWidth={2} />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
 
         <div className="chart-container">
-          <h3>⚙️ System Resources</h3>
-          <div className="chart-wrapper">
-            <Doughnut
-              data={performanceData}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    position: 'bottom',
-                    labels: {
-                      color: 'white',
-                      padding: 20,
-                    },
-                  },
-                },
-              }}
-            />
-          </div>
+          <h3>📊 Phân phối dữ liệu</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={chartData.slice(0, 10)}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="timestamp" />
+              <YAxis />
+              <Tooltip
+                labelFormatter={(value, payload) => `Thời gian: ${payload[0]?.payload?.timestamp}`}
+                formatter={(value) => [`${value}`, 'Giá trị']}
+              />
+              <Bar dataKey="value" fill="#2ecc71" />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
-      <div className="activity-feed">
-        <h3>📝 Live Activity Feed</h3>
-        <div className="activity-list">
-          <div className="activity-item">
-            <span className="activity-time">{new Date().toLocaleTimeString()}</span>
-            <span className="activity-message">New user connected from Vietnam</span>
-            <span className="activity-badge success">+1</span>
+      <div className="recent-data">
+        <h3>🔄 Dữ liệu gần đây</h3>
+        <div className="data-table">
+          <div className="table-header">
+            <span>Thời gian</span>
+            <span>Giá trị</span>
+            <span>Trạng thái</span>
           </div>
-          <div className="activity-item">
-            <span className="activity-time">
-              {new Date(Date.now() - 30000).toLocaleTimeString()}
-            </span>
-            <span className="activity-message">Google Sheets sync completed</span>
-            <span className="activity-badge info">✓</span>
-          </div>
-          <div className="activity-item">
-            <span className="activity-time">
-              {new Date(Date.now() - 60000).toLocaleTimeString()}
-            </span>
-            <span className="activity-message">Report generated successfully</span>
-            <span className="activity-badge success">📊</span>
-          </div>
-          <div className="activity-item">
-            <span className="activity-time">
-              {new Date(Date.now() - 90000).toLocaleTimeString()}
-            </span>
-            <span className="activity-message">Backend optimization deployed</span>
-            <span className="activity-badge info">🚀</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="dashboard-footer">
-        <div className="footer-info">
-          <span>🔄 Auto-refresh: Every 2 seconds</span>
-          <span>📡 WebSocket: {connectionStatus}</span>
-          <span>⚡ Real-time: Enabled</span>
+          {realTimeData.slice(0, 10).map((item, index) => (
+            <div key={index} className="table-row">
+              <span>{formatTime(new Date(item.timestamp))}</span>
+              <span>{item.value.toFixed(2)}</span>
+              <span className={`status ${item.status}`}>{item.status}</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>

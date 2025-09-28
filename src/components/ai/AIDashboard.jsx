@@ -1,371 +1,277 @@
-import {
-  Psychology as AiIcon,
-  Analytics as AnalyticsIcon,
-  Lightbulb as LightbulbIcon,
-  Refresh as RefreshIcon,
-  Speed as SpeedIcon,
-} from '@mui/icons-material';
-import {
-  Alert,
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  CircularProgress,
-  Grid,
-  IconButton,
-  LinearProgress,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  Tooltip,
-  Typography,
-} from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { fetchAIAnalysis, fetchAvailableModels, fetchPrediction, setAIServiceStatus } from '../../store/slices/aiSlice';
+import './AIDashboard.css';
 
 const AIDashboard = () => {
-  const [predictions, setPredictions] = useState(null);
-  const [insights, setInsights] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [lastUpdate, setLastUpdate] = useState(new Date());
+  const dispatch = useDispatch();
+  const {
+    analysisResults,
+    predictions,
+    availableModels,
+    isLoading,
+    isAnalyzing,
+    error,
+    aiServiceStatus
+  } = useSelector(state => state.ai);
 
-  const AI_SERVICE_URL = 'http://localhost:8000';
+  const [selectedModel, setSelectedModel] = useState('prediction_model_v4');
+  const [inputData, setInputData] = useState({
+    feature1: Math.random() * 100,
+    feature2: Math.random() * 100,
+    feature3: Math.random() * 100
+  });
 
   useEffect(() => {
-    fetchAIData();
-    const interval = setInterval(fetchAIData, 30000);
-    return () => clearInterval(interval);
-  }, []);
+    // Kiểm tra AI service status
+    checkAIServiceStatus();
+    // Load available models
+    dispatch(fetchAvailableModels());
+  }, [dispatch]);
 
-  const fetchAIData = async () => {
+  const checkAIServiceStatus = async () => {
     try {
-      setLoading(true);
-
-      // Try to fetch from AI service
-      try {
-        const response = await fetch(`${AI_SERVICE_URL}/health`);
-        if (response.ok) {
-          const predictionsResponse = await fetch(`${AI_SERVICE_URL}/api/ml/predict`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              timeframe: '1h',
-              metrics: ['response_time', 'active_users', 'cpu_usage'],
-            }),
-          });
-
-          if (predictionsResponse.ok) {
-            const data = await predictionsResponse.json();
-            setPredictions(data);
-          }
-        }
-      } catch (aiError) {
-        console.log('AI service not available, using mock data');
+      const response = await fetch('http://localhost:8000/health');
+      if (response.ok) {
+        dispatch(setAIServiceStatus('connected'));
+      } else {
+        dispatch(setAIServiceStatus('disconnected'));
       }
-
-      // Use mock data as fallback
-      if (!predictions) {
-        setPredictions(getMockPredictions());
-      }
-      setInsights(getMockInsights());
-      setLastUpdate(new Date());
-      setError(null);
-    } catch (err) {
-      setError('Using mock AI data');
-      setPredictions(getMockPredictions());
-      setInsights(getMockInsights());
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      dispatch(setAIServiceStatus('disconnected'));
     }
   };
 
-  const getMockPredictions = () => ({
-    predictions: {
-      response_time: [98, 102, 95, 110, 105, 100, 97, 103, 108, 96],
-      active_users: [520, 535, 510, 580, 565, 540, 515, 550, 590, 525],
-      cpu_usage: [45, 48, 42, 55, 52, 47, 44, 50, 58, 43],
-    },
-    confidence_scores: {
-      response_time: 0.85,
-      active_users: 0.78,
-      cpu_usage: 0.82,
-    },
-    insights: [
-      '🔮 AI predictions generated successfully',
-      '📈 Response time trending stable',
-      '👥 User activity within normal patterns',
-      '⚡ System performance optimized',
-    ],
-    recommendations: [
-      'Continue monitoring response time trends',
-      'Consider caching optimization for peak hours',
-      'Monitor CPU usage during high activity',
-    ],
-  });
+  const handleAnalyze = () => {
+    dispatch(fetchAIAnalysis(inputData));
+  };
 
-  const getMockInsights = () => ({
-    insights: {
-      performance_trends: {
-        performance_score: 85,
-        trend_direction: 'improving',
-        confidence: 0.87,
-      },
-      business_impact: {
-        user_satisfaction: 89,
-        estimated_revenue_impact: '+5.2%',
-      },
-    },
-    recommendations: [
-      {
-        action: 'Implement real-time monitoring',
-        priority: 'high',
-        impact: 'Faster issue detection',
-      },
-      {
-        action: 'Optimize database queries',
-        priority: 'medium',
-        impact: '15% response time improvement',
-      },
-    ],
-  });
+  const handlePredict = () => {
+    dispatch(fetchPrediction(selectedModel));
+  };
 
-  if (loading && !predictions) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
-        <CircularProgress />
-        <Typography variant="h6" sx={{ ml: 2 }}>
-          Loading AI Insights...
-        </Typography>
-      </Box>
-    );
-  }
+  const formatTime = (timestamp) => {
+    return new Date(timestamp).toLocaleString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+  };
+
+  // Chuẩn bị dữ liệu cho biểu đồ
+  const predictionChartData = Object.entries(predictions).map(([model, data]) => ({
+    model: model.replace('_model_v4', ''),
+    prediction: data.prediction,
+    confidence: data.confidence * 100
+  }));
+
+  const confidenceData = [
+    { name: 'Cao', value: analysisResults.filter(r => r.confidence > 0.8).length },
+    { name: 'Trung bình', value: analysisResults.filter(r => r.confidence > 0.5 && r.confidence <= 0.8).length },
+    { name: 'Thấp', value: analysisResults.filter(r => r.confidence <= 0.5).length }
+  ];
+
+  const COLORS = ['#2ecc71', '#f39c12', '#e74c3c'];
 
   return (
-    <Box sx={{ p: 3 }}>
-      {/* Header */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Box display="flex" alignItems="center">
-          <AiIcon sx={{ fontSize: 32, color: 'primary.main', mr: 1 }} />
-          <Typography variant="h4" component="h1">
-            AI-Powered Analytics
-          </Typography>
-        </Box>
-        <Box display="flex" alignItems="center" gap={2}>
-          <Typography variant="body2" color="text.secondary">
-            Last updated: {lastUpdate.toLocaleTimeString()}
-          </Typography>
-          <Tooltip title="Refresh AI Data">
-            <IconButton onClick={fetchAIData} disabled={loading}>
-              <RefreshIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </Box>
+    <div className="ai-dashboard">
+      <div className="dashboard-header">
+        <h1>🧠 AI Analytics Dashboard</h1>
+        <div className="header-info">
+          <div className={`ai-status ${aiServiceStatus}`}>
+            {aiServiceStatus === 'connected' ? '🟢 AI Service Connected' : '🔴 AI Service Disconnected'}
+          </div>
+        </div>
+      </div>
 
       {error && (
-        <Alert severity="info" sx={{ mb: 3 }}>
-          AI Service Status: {error}
-        </Alert>
+        <div className="error-banner">
+          <span>⚠️ Lỗi AI: {error}</span>
+        </div>
       )}
 
-      <Grid container spacing={3}>
-        {/* Performance Score */}
-        <Grid item xs={12} md={4}>
-          <Card
-            sx={{
-              height: '100%',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: 'white',
-            }}
+      {/* AI Controls */}
+      <div className="ai-controls">
+        <div className="control-panel">
+          <h3>🎯 AI Analysis Controls</h3>
+
+          <div className="input-group">
+            <label>Feature 1:</label>
+            <input
+              type="number"
+              value={inputData.feature1}
+              onChange={(e) => setInputData({...inputData, feature1: parseFloat(e.target.value)})}
+              step="0.1"
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Feature 2:</label>
+            <input
+              type="number"
+              value={inputData.feature2}
+              onChange={(e) => setInputData({...inputData, feature2: parseFloat(e.target.value)})}
+              step="0.1"
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Feature 3:</label>
+            <input
+              type="number"
+              value={inputData.feature3}
+              onChange={(e) => setInputData({...inputData, feature3: parseFloat(e.target.value)})}
+              step="0.1"
+            />
+          </div>
+
+          <button
+            onClick={handleAnalyze}
+            disabled={isAnalyzing}
+            className="analyze-btn"
           >
-            <CardContent>
-              <Box display="flex" alignItems="center" mb={2}>
-                <SpeedIcon sx={{ mr: 1 }} />
-                <Typography variant="h6">AI Performance Score</Typography>
-              </Box>
-              <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
-                {insights?.insights?.performance_trends?.performance_score || 85}
-              </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                {insights?.insights?.performance_trends?.trend_direction || 'improving'} trend
-              </Typography>
-              <LinearProgress
-                variant="determinate"
-                value={insights?.insights?.performance_trends?.performance_score || 85}
-                sx={{
-                  mt: 2,
-                  bgcolor: 'rgba(255,255,255,0.3)',
-                  '& .MuiLinearProgress-bar': { bgcolor: 'rgba(255,255,255,0.8)' },
-                }}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
+            {isAnalyzing ? '🔄 Đang phân tích...' : '🧠 Phân tích AI'}
+          </button>
+        </div>
 
-        {/* Predictions Summary */}
-        <Grid item xs={12} md={8}>
-          <Card sx={{ height: '100%' }}>
-            <CardContent>
-              <Box display="flex" alignItems="center" mb={2}>
-                <AnalyticsIcon sx={{ mr: 1, color: 'primary.main' }} />
-                <Typography variant="h6">AI Predictions & Confidence</Typography>
-              </Box>
+        <div className="control-panel">
+          <h3>🔮 Prediction Controls</h3>
 
-              <Grid container spacing={2}>
-                {predictions &&
-                  Object.entries(predictions.predictions).map(([metric, values]) => (
-                    <Grid item xs={12} sm={4} key={metric}>
-                      <Paper sx={{ p: 2, textAlign: 'center' }}>
-                        <Typography variant="subtitle2" sx={{ textTransform: 'capitalize', mb: 1 }}>
-                          {metric.replace('_', ' ')}
-                        </Typography>
-                        <Typography variant="h6" color="primary.main">
-                          {Array.isArray(values) ? Math.round(values[values.length - 1]) : 'N/A'}
-                        </Typography>
-                        <Chip
-                          label={`${Math.round((predictions.confidence_scores?.[metric] || 0.8) * 100)}% confidence`}
-                          size="small"
-                          color="primary"
-                          variant="outlined"
-                          sx={{ mt: 1 }}
-                        />
-                      </Paper>
-                    </Grid>
-                  ))}
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* AI Insights */}
-        <Grid item xs={12} md={6}>
-          <Card sx={{ height: 400 }}>
-            <CardContent>
-              <Box display="flex" alignItems="center" mb={2}>
-                <AnalyticsIcon sx={{ mr: 1, color: 'primary.main' }} />
-                <Typography variant="h6">AI Insights</Typography>
-              </Box>
-
-              <List dense>
-                {(predictions?.insights || []).map((insight, index) => (
-                  <ListItem key={index} sx={{ pl: 0 }}>
-                    <ListItemText primary={insight} primaryTypographyProps={{ variant: 'body2' }} />
-                  </ListItem>
-                ))}
-              </List>
-
-              <Typography variant="subtitle2" sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                Business Impact:
-              </Typography>
-              <Box display="flex" gap={1} flexWrap="wrap">
-                <Chip
-                  label={`Satisfaction: ${insights?.insights?.business_impact?.user_satisfaction || 89}%`}
-                  variant="outlined"
-                  color="success"
-                  size="small"
-                />
-                <Chip
-                  label={`Revenue: ${insights?.insights?.business_impact?.estimated_revenue_impact || '+5.2%'}`}
-                  variant="outlined"
-                  color="primary"
-                  size="small"
-                />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* AI Recommendations */}
-        <Grid item xs={12} md={6}>
-          <Card sx={{ height: 400 }}>
-            <CardContent>
-              <Box display="flex" alignItems="center" mb={2}>
-                <LightbulbIcon sx={{ mr: 1, color: 'warning.main' }} />
-                <Typography variant="h6">AI Recommendations</Typography>
-              </Box>
-
-              <List>
-                {(predictions?.recommendations || []).slice(0, 3).map((rec, index) => (
-                  <ListItem key={index} sx={{ pl: 0 }}>
-                    <ListItemText primary={rec} primaryTypographyProps={{ variant: 'body2' }} />
-                  </ListItem>
-                ))}
-              </List>
-
-              <Typography variant="subtitle2" sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
-                Priority Actions:
-              </Typography>
-              {(insights?.recommendations || []).slice(0, 2).map((rec, index) => (
-                <Paper key={index} sx={{ p: 2, mb: 1, bgcolor: 'grey.50' }}>
-                  <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                    {rec.action}
-                  </Typography>
-                  <Box display="flex" gap={1} mt={1}>
-                    <Chip
-                      label={rec.priority}
-                      size="small"
-                      color={rec.priority === 'high' ? 'error' : 'warning'}
-                    />
-                    <Chip label={rec.impact} size="small" variant="outlined" />
-                  </Box>
-                </Paper>
+          <div className="input-group">
+            <label>Model:</label>
+            <select
+              value={selectedModel}
+              onChange={(e) => setSelectedModel(e.target.value)}
+            >
+              {availableModels.map((model, index) => (
+                <option key={index} value={model.name}>
+                  {model.name} ({model.type}) - Accuracy: {(model.accuracy * 100).toFixed(1)}%
+                </option>
               ))}
-            </CardContent>
-          </Card>
-        </Grid>
+            </select>
+          </div>
 
-        {/* AI Status */}
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Box display="flex" alignItems="center" mb={2}>
-                <AiIcon sx={{ mr: 1, color: 'success.main' }} />
-                <Typography variant="h6">AI System Status</Typography>
-              </Box>
+          <button
+            onClick={handlePredict}
+            disabled={isLoading}
+            className="predict-btn"
+          >
+            {isLoading ? '🔄 Đang dự đoán...' : '🔮 Dự đoán'}
+          </button>
+        </div>
+      </div>
 
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={3}>
-                  <Paper
-                    sx={{ p: 2, textAlign: 'center', bgcolor: 'success.light', color: 'white' }}
-                  >
-                    <Typography variant="subtitle2">Predictive Analytics</Typography>
-                    <Typography variant="h6">✅ ACTIVE</Typography>
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                  <Paper
-                    sx={{ p: 2, textAlign: 'center', bgcolor: 'primary.light', color: 'white' }}
-                  >
-                    <Typography variant="subtitle2">Anomaly Detection</Typography>
-                    <Typography variant="h6">🔍 MONITORING</Typography>
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                  <Paper
-                    sx={{ p: 2, textAlign: 'center', bgcolor: 'warning.light', color: 'white' }}
-                  >
-                    <Typography variant="subtitle2">Optimization Engine</Typography>
-                    <Typography variant="h6">⚙️ OPTIMIZING</Typography>
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                  <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'info.light', color: 'white' }}>
-                    <Typography variant="subtitle2">Learning Models</Typography>
-                    <Typography variant="h6">🧠 LEARNING</Typography>
-                  </Paper>
-                </Grid>
-              </Grid>
+      {/* Metrics */}
+      <div className="metrics-grid">
+        <div className="metric-card">
+          <div className="metric-icon">🧠</div>
+          <div className="metric-content">
+            <h3>Tổng phân tích</h3>
+            <p className="metric-value">{analysisResults.length}</p>
+          </div>
+        </div>
 
-              <Alert severity="success" sx={{ mt: 2 }}>
-                🚀 Phase 4 AI/ML Integration Complete! All intelligent systems operational.
-              </Alert>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </Box>
+        <div className="metric-card">
+          <div className="metric-icon">🔮</div>
+          <div className="metric-content">
+            <h3>Dự đoán đã thực hiện</h3>
+            <p className="metric-value">{Object.keys(predictions).length}</p>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="metric-icon">📊</div>
+          <div className="metric-content">
+            <h3>Models có sẵn</h3>
+            <p className="metric-value">{availableModels.length}</p>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="metric-icon">⚡</div>
+          <div className="metric-content">
+            <h3>Confidence TB</h3>
+            <p className="metric-value">
+              {analysisResults.length > 0
+                ? (analysisResults.reduce((sum, r) => sum + r.confidence, 0) / analysisResults.length * 100).toFixed(1) + '%'
+                : '0%'
+              }
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Charts */}
+      <div className="charts-grid">
+        <div className="chart-container">
+          <h3>🔮 Predictions Chart</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={predictionChartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="model" />
+              <YAxis />
+              <Tooltip
+                labelFormatter={(value) => `Model: ${value}`}
+                formatter={(value, name) => [value, name === 'prediction' ? 'Dự đoán' : 'Confidence']}
+              />
+              <Line type="monotone" dataKey="prediction" stroke="#3498db" strokeWidth={2} />
+              <Line type="monotone" dataKey="confidence" stroke="#e74c3c" strokeWidth={2} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="chart-container">
+          <h3>📊 Confidence Distribution</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={confidenceData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {confidenceData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Recent Analysis Results */}
+      <div className="recent-analysis">
+        <h3>🔄 Kết quả phân tích gần đây</h3>
+        <div className="analysis-table">
+          <div className="table-header">
+            <span>Thời gian</span>
+            <span>Dự đoán</span>
+            <span>Confidence</span>
+            <span>Loại</span>
+          </div>
+          {analysisResults.slice(0, 10).map((result, index) => (
+            <div key={index} className="table-row">
+              <span>{formatTime(result.timestamp)}</span>
+              <span>{result.prediction.toFixed(2)}</span>
+              <span className={`confidence ${result.confidence > 0.8 ? 'high' : result.confidence > 0.5 ? 'medium' : 'low'}`}>
+                {(result.confidence * 100).toFixed(1)}%
+              </span>
+              <span>{result.analysis_type}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
 
