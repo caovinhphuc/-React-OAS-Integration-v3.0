@@ -1,3 +1,57 @@
  INFO  Accepting connections at http://localhost:8080
  HTTP  9/28/2025 2:03:05 PM ::1 GET /
  HTTP  9/28/2025 2:03:05 PM ::1 Returned 200 in 32 ms
+ HTTP  9/28/2025 2:36:10 PM ::1 GET /
+ HTTP  9/28/2025 2:36:10 PM ::1 Returned 200 in 37 ms
+ HTTP  9/28/2025 2:36:10 PM ::1 GET /static/js/main.4e874a0b.js
+ HTTP  9/28/2025 2:36:10 PM ::1 GET /static/css/main.f4afd472.css
+ HTTP  9/28/2025 2:36:10 PM ::1 Returned 200 in 16 ms
+ HTTP  9/28/2025 2:36:10 PM ::1 Returned 200 in 14 ms
+ HTTP  9/28/2025 2:36:10 PM ::1 GET /favicon.ico
+ HTTP  9/28/2025 2:36:10 PM ::1 GET /manifest.json
+ HTTP  9/28/2025 2:36:10 PM ::1 Returned 200 in 2 ms
+ HTTP  9/28/2025 2:36:10 PM ::1 Returned 200 in 1 ms
+ HTTP  9/28/2025 2:36:35 PM ::1 GET /dashboard
+ HTTP  9/28/2025 2:36:35 PM ::1 Returned 404 in 8 ms
+ HTTP  9/28/2025 2:36:35 PM ::1 GET /favicon.ico
+ HTTP  9/28/2025 2:36:35 PM ::1 Returned 304 in 2 ms
+ HTTP  9/28/2025 2:37:13 PM ::1 GET /google-sheets
+ HTTP  9/28/2025 2:37:13 PM ::1 Returned 404 in 10 ms
+ HTTP  9/28/2025 2:37:13 PM ::1 GET /favicon.ico
+ HTTP  9/28/2025 2:37:13 PM ::1 Returned 304 in 1 ms
+ HTTP  9/28/2025 2:39:27 PM ::1 GET /google-sheets
+ HTTP  9/28/2025 2:39:27 PM ::1 Returned 404 in 3 ms
+ HTTP  9/28/2025 2:39:27 PM ::1 GET /favicon.ico
+ HTTP  9/28/2025 2:39:27 PM ::1 Returned 200 in 1 ms
+ HTTP  9/28/2025 2:39:31 PM ::1 GET /
+ HTTP  9/28/2025 2:39:31 PM ::1 Returned 200 in 1 ms
+ HTTP  9/28/2025 2:39:31 PM ::1 GET /static/js/main.4e874a0b.js
+ HTTP  9/28/2025 2:39:31 PM ::1 GET /static/css/main.f4afd472.css
+ HTTP  9/28/2025 2:39:31 PM ::1 Returned 304 in 1 ms
+ HTTP  9/28/2025 2:39:31 PM ::1 Returned 304 in 3 ms
+ HTTP  9/28/2025 2:39:31 PM ::1 GET /favicon.ico
+ HTTP  9/28/2025 2:39:31 PM ::1 Returned 304 in 1 ms
+ HTTP  9/28/2025 2:39:31 PM ::1 GET /manifest.json
+ HTTP  9/28/2025 2:39:31 PM ::1 Returned 304 in 1 ms
+ HTTP  9/28/2025 2:39:35 PM ::1 GET /static/js/20.17f6b216.chunk.js
+ HTTP  9/28/2025 2:39:35 PM ::1 GET /static/css/653.548a7e40.chunk.css
+ HTTP  9/28/2025 2:39:35 PM ::1 GET /static/js/163.0cdd8939.chunk.js
+ HTTP  9/28/2025 2:39:35 PM ::1 GET /static/js/653.6f76e2ad.chunk.js
+ HTTP  9/28/2025 2:39:35 PM ::1 Returned 200 in 3 ms
+ HTTP  9/28/2025 2:39:35 PM ::1 Returned 200 in 5 ms
+ HTTP  9/28/2025 2:39:35 PM ::1 Returned 200 in 8 ms
+ HTTP  9/28/2025 2:39:35 PM ::1 GET /favicon.ico
+ HTTP  9/28/2025 2:39:35 PM ::1 Returned 304 in 1 ms
+ HTTP  9/28/2025 2:39:35 PM ::1 Returned 200 in 14 ms
+ HTTP  9/28/2025 2:39:36 PM ::1 GET /static/css/670.2e71ef69.chunk.css
+ HTTP  9/28/2025 2:39:36 PM ::1 Returned 200 in 3 ms
+ HTTP  9/28/2025 2:39:36 PM ::1 GET /static/js/670.053a0fdb.chunk.js
+ HTTP  9/28/2025 2:39:36 PM ::1 GET /favicon.ico
+ HTTP  9/28/2025 2:39:36 PM ::1 Returned 304 in 0 ms
+ HTTP  9/28/2025 2:39:36 PM ::1 Returned 200 in 3 ms
+ HTTP  9/28/2025 2:39:37 PM ::1 GET /static/css/819.9d5b65cd.chunk.css
+ HTTP  9/28/2025 2:39:37 PM ::1 GET /static/js/819.1f6b934e.chunk.js
+ HTTP  9/28/2025 2:39:37 PM ::1 GET /favicon.ico
+ HTTP  9/28/2025 2:39:37 PM ::1 Returned 304 in 0 ms
+ HTTP  9/28/2025 2:39:37 PM ::1 Returned 200 in 2 ms
+ HTTP  9/28/2025 2:39:37 PM ::1 Returned 200 in 2 ms

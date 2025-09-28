@@ -2,3 +2,4 @@ node_modules
 shared
 automation/config/google-credentials.json
 *.dmg
+.vercel
