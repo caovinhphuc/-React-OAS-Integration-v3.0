@@ -391,7 +391,8 @@ class IntelligentPatternRecognition {
     const sumY = stats.sum(y);
     const sumXY = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
     const sumXX = x.reduce((sum, xi) => sum + xi * xi, 0);
-    const sumYY = y.reduce((sum, yi) => sum + yi * yi, 0);
+    // sumYY calculated for potential future use in correlation analysis
+    const _sumYY = y.reduce((sum, yi) => sum + yi * yi, 0); // eslint-disable-line no-unused-vars
 
     const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
     const intercept = (sumY - slope * sumX) / n;
@@ -517,7 +518,8 @@ class IntelligentPatternRecognition {
    */
   identifyHotspots(spatialData) {
     const hotspots = [];
-    const densityThreshold = 0.3;
+    // densityThreshold reserved for future filtering enhancement
+    // const densityThreshold = 0.3;
 
     for (let i = 0; i < spatialData.length; i++) {
       const point = spatialData[i];
@@ -582,4 +584,5 @@ class IntelligentPatternRecognition {
 }
 
 // Export singleton instance
-export default new IntelligentPatternRecognition();
+const intelligentPatternRecognition = new IntelligentPatternRecognition();
+export default intelligentPatternRecognition;

@@ -39,8 +39,8 @@ class AdvancedMLService {
       await tf.ready();
       console.log('✅ TensorFlow.js ready:', tf.getBackend());
 
-      // Initialize Brain.js
-      const brain = await getBrain();
+      // Initialize Brain.js (loaded to verify availability)
+      await getBrain();
       console.log('✅ Brain.js ready');
 
       this.isInitialized = true;
@@ -368,4 +368,5 @@ class AdvancedMLService {
 }
 
 // Export singleton instance
-export default new AdvancedMLService();
+const advancedMLService = new AdvancedMLService();
+export default advancedMLService;

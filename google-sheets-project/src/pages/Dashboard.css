@@ -232,20 +232,20 @@
   .dashboard-home {
     padding: var(--space-4);
   }
-  
+
   .dashboard-hero {
     padding: var(--space-8) var(--space-6);
   }
-  
+
   .dashboard-hero h1 {
     font-size: var(--text-3xl);
   }
-  
+
   .dashboard-cards {
     grid-template-columns: 1fr;
     gap: var(--space-4);
   }
-  
+
   .status-cards {
     grid-template-columns: 1fr;
   }

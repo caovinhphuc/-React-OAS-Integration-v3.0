@@ -1,4 +1,3 @@
-import React from "react";
 import "./ConfigWarning.css";
 
 const ConfigWarning = () => {

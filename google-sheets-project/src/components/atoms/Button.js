@@ -1,16 +1,15 @@
-import React from 'react';
 import './Button.css';
 
-export const Button = ({ 
-  type = 'button', 
-  variant = 'primary', 
-  size = 'md', 
-  loading = false, 
+export const Button = ({
+  type = 'button',
+  variant = 'primary',
+  size = 'md',
+  loading = false,
   disabled = false,
-  className = '', 
-  children, 
+  className = '',
+  children,
   onClick,
-  ...props 
+  ...props
 }) => {
   const buttonClasses = [
     'btn',

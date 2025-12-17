@@ -1,4 +1,3 @@
-import React from 'react';
 
 export const Icon = ({ name, size = 16, color, className = '', ...props }) => {
   // Icon mapping - sử dụng emoji hoặc symbols đơn giản
@@ -7,13 +6,13 @@ export const Icon = ({ name, size = 16, color, className = '', ...props }) => {
     people: '👤',
     user: '👤',
     users: '👥',
-    
+
     // Security
     lock: '🔒',
     unlock: '🔓',
     key: '🔑',
     shield: '🛡️',
-    
+
     // Actions
     view: '👁️',
     hide: '🙈',
@@ -21,7 +20,7 @@ export const Icon = ({ name, size = 16, color, className = '', ...props }) => {
     edit: '✏️',
     save: '💾',
     delete: '🗑️',
-    
+
     // Navigation
     close: '✖️',
     check: '✅',
@@ -29,33 +28,33 @@ export const Icon = ({ name, size = 16, color, className = '', ...props }) => {
     back: '←',
     up: '↑',
     down: '↓',
-    
+
     // Status
     success: '✅',
     error: '❌',
     warning: '⚠️',
     info: 'ℹ️',
     loading: '⏳',
-    
+
     // Actions
     search: '🔍',
     filter: '🔽',
     refresh: '🔄',
     download: '📥',
     upload: '📤',
-    
+
     // Communication
     email: '📧',
     phone: '📞',
     message: '💬',
-    
+
     // Files & Data
     file: '📄',
     folder: '📁',
     image: '🖼️',
     pdf: '📕',
     excel: '📗',
-    
+
     // Default
     default: '●'
   };

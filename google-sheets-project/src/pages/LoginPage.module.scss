@@ -26,14 +26,14 @@
 
 .brandLogo {
   margin-bottom: 3rem;
-  
+
   h1 {
     font-size: 3rem;
     font-weight: 800;
     margin-bottom: 0.5rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
-  
+
   p {
     font-size: 1.2rem;
     opacity: 0.9;
@@ -54,7 +54,7 @@
   border-radius: 12px;
   backdrop-filter: blur(5px);
   transition: all 0.3s ease;
-  
+
   &:hover {
     background: rgba(255, 255, 255, 0.15);
     transform: translateX(5px);
@@ -74,7 +74,7 @@
     margin-bottom: 0.5rem;
     color: white;
   }
-  
+
   p {
     font-size: 0.9rem;
     opacity: 0.8;
@@ -85,7 +85,7 @@
 
 .companyTagline {
   text-align: center;
-  
+
   p {
     font-size: 1.1rem;
     font-style: italic;
@@ -313,7 +313,7 @@
     &:focus {
       outline: none;
       border-color: #ff6b35;
-      box-shadow: 
+      box-shadow:
         0 0 0 4px rgba(255, 107, 53, 0.15),
         0 4px 12px rgba(255, 107, 53, 0.1);
       transform: translateY(-2px);
@@ -480,7 +480,7 @@
 
   &:hover:not(:disabled) {
     transform: translateY(-3px);
-    box-shadow: 
+    box-shadow:
       0 8px 25px rgba(255, 107, 53, 0.4),
       0 4px 12px rgba(0, 0, 0, 0.15);
     background: linear-gradient(135deg, #ff7849 0%, #ffac1a 100%) !important;
@@ -598,37 +598,37 @@
     flex-direction: column;
     padding: 0;
   }
-  
+
   .leftSidebar {
     padding: 2rem 1rem;
     text-align: center;
-    
+
     .brandLogo {
       margin-bottom: 2rem;
-      
+
       h1 {
         font-size: 2rem;
       }
-      
+
       p {
         font-size: 1rem;
       }
     }
-    
+
     .featuresList {
       display: none; // Ẩn trên mobile để tiết kiệm không gian
     }
-    
+
     .companyTagline {
       margin-bottom: 1rem;
-      
+
       p {
         font-size: 0.9rem;
         padding: 1rem;
       }
     }
   }
-  
+
   .loginCard {
     padding: 1.5rem;
     max-width: 100%;
@@ -636,7 +636,7 @@
     border-left: none;
     border-top: 1px solid rgba(255, 255, 255, 0.2);
   }
-  
+
   .loginPage {
     max-width: 100%;
   }

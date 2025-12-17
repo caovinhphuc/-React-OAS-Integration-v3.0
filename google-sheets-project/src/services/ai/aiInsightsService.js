@@ -429,7 +429,8 @@ export class AIInsightsEngine {
     const insights = []
 
     try {
-      const { sheets = [], files = [], alerts = [] } = context
+      // alerts reserved for future correlation analysis
+      const { sheets = [], files = [], alerts: _alerts = [] } = context // eslint-disable-line no-unused-vars
 
       // Analyze correlation between different data sources
       if (sheets.length > 0 && files.length > 0) {
@@ -768,7 +769,9 @@ export class NLPInsightsGenerator {
   }
 }
 
-export default {
+const aiInsightsExports = {
   AIInsightsEngine,
   NLPInsightsGenerator,
 }
+
+export default aiInsightsExports

@@ -5,8 +5,8 @@ import './AIDashboard.css'
 // Import Real AI Services
 import { AIInsightsEngine } from '../../services/ai/aiInsightsService'
 import {
-  RegressionPredictionService,
-  TimeSeriesPredictionService,
+    RegressionPredictionService,
+    TimeSeriesPredictionService,
 } from '../../services/ai/aiPredictiveService'
 
 const AIDashboard = () => {
@@ -28,6 +28,8 @@ const AIDashboard = () => {
 
   // Initialize AI services
   const [aiInsightsEngine] = useState(() => new AIInsightsEngine())
+  // TimeSeriesPredictionService reserved for advanced time-series analysis
+  // eslint-disable-next-line no-unused-vars
   const [predictionService] = useState(() => new TimeSeriesPredictionService())
 
   // Real AI analysis function
@@ -360,7 +362,8 @@ const AIDashboard = () => {
 
   useEffect(() => {
     analyzeData()
-  }, [sheets.length, files.length, alerts.length, analyzeData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sheets.length, files.length, alerts.length])
 
   const getInsightIcon = (type) => {
     switch (type) {

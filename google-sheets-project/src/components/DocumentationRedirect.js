@@ -8,10 +8,10 @@ const DocumentationRedirect = ({ path }) => {
   }, [path]);
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
       height: '100vh',
       background: 'linear-gradient(135deg, #ff6b35 0%, #ff9500 100%)',
       color: 'white',
@@ -20,9 +20,9 @@ const DocumentationRedirect = ({ path }) => {
       <div style={{ textAlign: 'center' }}>
         <h2>📚 Redirecting to Documentation...</h2>
         <p>You will be redirected to GitHub documentation in a moment.</p>
-        <div style={{ 
-          width: '40px', 
-          height: '40px', 
+        <div style={{
+          width: '40px',
+          height: '40px',
           border: '4px solid rgba(255,255,255,0.3)',
           borderTop: '4px solid white',
           borderRadius: '50%',
@@ -31,10 +31,10 @@ const DocumentationRedirect = ({ path }) => {
         }}></div>
         <p>
           If redirect doesn't work, click{' '}
-          <a 
+          <a
             href={`https://github.com/caovinhphuc/react-google-integration/blob/main/${path}`}
             style={{ color: '#ffeb3b', textDecoration: 'underline' }}
-            target="_blank" 
+            target="_blank"
             rel="noopener noreferrer"
           >
             here

@@ -3,14 +3,14 @@
  * Real AI/ML with TensorFlow.js, Brain.js, OpenAI
  */
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import './AIDashboard.css'
 
 // Import AI Services
 import advancedMLService from '../../services/ai/advancedMLService'
+import { RegressionPredictionService, TimeSeriesPredictionService } from '../../services/ai/aiPredictiveService'
 import intelligentPatternRecognition from '../../services/ai/intelligentPatternRecognition'
 import realTimeProcessor from '../../services/ai/realTimeProcessor'
-import { TimeSeriesPredictionService, RegressionPredictionService } from '../../services/ai/aiPredictiveService'
 
 const AIDemo = () => {
   const [isInitialized, setIsInitialized] = useState(false)
@@ -21,6 +21,7 @@ const AIDemo = () => {
   // Initialize AI services
   useEffect(() => {
     initializeAIServices()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const addLog = (message, type = 'info') => {
@@ -32,22 +33,22 @@ const AIDemo = () => {
   const initializeAIServices = async () => {
     try {
       addLog('🚀 Initializing AI Services...', 'info')
-      
+
       // Initialize Advanced ML Service
       const mlInitialized = await advancedMLService.initialize()
       addLog(`Advanced ML Service: ${mlInitialized ? '✅ Ready' : '❌ Failed'}`, mlInitialized ? 'success' : 'error')
-      
+
       // Initialize Pattern Recognition
       const patternInitialized = await intelligentPatternRecognition.initialize()
       addLog(`Pattern Recognition: ${patternInitialized ? '✅ Ready' : '❌ Failed'}`, patternInitialized ? 'success' : 'error')
-      
+
       // Initialize Real-time Processor
       realTimeProcessor.initializeDataStream('demo_stream', {
         bufferSize: 100,
         analytics: ['mean', 'trend', 'anomaly', 'prediction']
       })
       addLog('Real-time Processor: ✅ Ready', 'success')
-      
+
       setIsInitialized(mlInitialized && patternInitialized)
       addLog('🎉 AI Services initialized successfully!', 'success')
     } catch (error) {
@@ -74,13 +75,13 @@ const AIDemo = () => {
       addLog('🧠 Testing Time Series Prediction...', 'info')
       const timeSeriesService = new TimeSeriesPredictionService()
       await timeSeriesService.initialize()
-      
+
       const trainingData = sampleData.slice(0, 50)
       const testData = sampleData.slice(50, 60)
-      
+
       const trainingResult = await timeSeriesService.trainModel(trainingData, 'demo_model')
       addLog(`Training completed: Loss = ${trainingResult.finalLoss.toFixed(4)}`, 'success')
-      
+
       const prediction = await timeSeriesService.predict(testData, 7, 'demo_model')
       addLog(`Prediction confidence: ${(prediction.confidence * 100).toFixed(1)}%`, 'success')
 
@@ -100,7 +101,7 @@ const AIDemo = () => {
           timestamp: Date.now() - (sampleData.length - index) * 1000
         })
       })
-      
+
       const streamStatus = realTimeProcessor.getAllStreamStatus()
       const batchResult = realTimeProcessor.processBatch('demo_stream')
       addLog(`Processed ${streamStatus.demo_stream?.totalProcessed || 0} data points`, 'success')
@@ -117,7 +118,7 @@ const AIDemo = () => {
         patterns: patternResult,
         realTime: { processingLatency: 100 }
       }
-      
+
       const insights = await advancedMLService.generateInsightsWithGPT(insightsContext, 'demo analysis')
       addLog(`Generated ${insights.insights?.length || 0} insights`, 'success')
 
@@ -202,21 +203,21 @@ const AIDemo = () => {
       </div>
 
       <div className="demo-controls">
-        <button 
-          onClick={runAIDemo} 
+        <button
+          onClick={runAIDemo}
           disabled={!isInitialized || isRunning}
           className="demo-button primary"
         >
           {isRunning ? '🔄 Running AI Demo...' : '🚀 Start AI Demo'}
         </button>
-        
-        <button 
+
+        <button
           onClick={clearLogs}
           className="demo-button secondary"
         >
           🗑️ Clear Logs
         </button>
-        
+
         <div className="status-indicator">
           {isInitialized ? '✅ AI Ready' : '⏳ Initializing...'}
         </div>
@@ -310,7 +311,7 @@ const AIDemo = () => {
             <div key={index} className="log-entry">
               <span className="log-timestamp">[{log.timestamp}]</span>
               <span className="log-icon">{getLogIcon(log.type)}</span>
-              <span 
+              <span
                 className="log-message"
                 style={{ color: getLogColor(log.type) }}
               >

@@ -135,7 +135,7 @@ const EnhancedAIDashboard = () => {
         patternRecognition: patternResults,
         realTimeAnalytics: realTimeResults,
         aiInsights: aiInsightsResults,
-        predictions: await generateEnsemblePredictions(preparedData),
+        predictions: await advancedMLService.generateEnsemblePredictions(preparedData),
         analysisTime: Date.now() - startTime,
       })
 
@@ -369,6 +369,7 @@ const EnhancedAIDashboard = () => {
     if (aiState.isInitialized && (sheets?.length > 0 || files?.length > 0)) {
       setTimeout(() => runComprehensiveAnalysis(), 2000)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sheets, files, aiState.isInitialized])
 
   // ===============================

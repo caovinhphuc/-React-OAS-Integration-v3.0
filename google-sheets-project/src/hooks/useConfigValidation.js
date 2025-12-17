@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { validateConfig } from "../config/googleConfig";
 
 export const useConfigValidation = () => {

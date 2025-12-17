@@ -121,7 +121,7 @@ class RealTimeProcessor {
    * Process all batches
    */
   processAllBatches() {
-    for (const [streamId, processor] of this.batchProcessors) {
+    for (const [streamId] of this.batchProcessors) {
       this.processBatch(streamId);
     }
   }
@@ -510,4 +510,5 @@ class RealTimeProcessor {
 }
 
 // Export singleton instance
-export default new RealTimeProcessor();
+const realTimeProcessor = new RealTimeProcessor();
+export default realTimeProcessor;

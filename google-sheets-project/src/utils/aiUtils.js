@@ -285,6 +285,10 @@ export class AIPatternRecognizer {
           })
         }
         break
+
+      default:
+        // No pattern matching for unknown type
+        break
     }
 
     return {
@@ -404,9 +408,11 @@ export const AI_CONFIG = {
   },
 }
 
-export default {
+const aiUtils = {
   AIDataProcessor,
   AIStatsAnalyzer,
   AIPatternRecognizer,
   AI_CONFIG,
 }
+
+export default aiUtils

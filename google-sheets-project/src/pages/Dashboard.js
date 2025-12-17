@@ -58,9 +58,9 @@ const Dashboard = () => {
   const ActiveComponent = availableTabs.find((tab) => tab.id === activeTab)?.component;
 
   return (
-    <MainLayout 
-      activeTab={activeTab} 
-      setActiveTab={setActiveTab} 
+    <MainLayout
+      activeTab={activeTab}
+      setActiveTab={setActiveTab}
       configValid={configValid}
       user={user}
       showUserInfo={true}
@@ -84,7 +84,7 @@ const Dashboard = () => {
       {/* User info footer */}
       <div className="dashboard-user-footer">
         <p>
-          🔒 Đã đăng nhập: <strong>{user?.email}</strong> | 
+          🔒 Đã đăng nhập: <strong>{user?.email}</strong> |
           Quyền: <strong>{user?.permissions?.join(", ") || "Không có"}</strong>
         </p>
       </div>
