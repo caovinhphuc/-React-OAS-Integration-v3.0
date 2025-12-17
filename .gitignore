@@ -3,3 +3,18 @@ shared
 automation/config/google-credentials.json
 *.dmg
 .vercel
+
+# OS files
+.DS_Store
+*.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Misc
+=
